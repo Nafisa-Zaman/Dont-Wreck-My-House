@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--//controller(ui) requires: Forager service, forage service, item service, view
+        //view(ui) requires: Console IO
+        //Forager service requires: forager repository
+        //Item service requires: item repository
+        //Forage service requires: forage, forager and item repository-->
+
+
+
+    <!-- Repositories -->
+    <bean id="guestRepo" class="Data.GuestFileRepo">
+        <constructor-arg value="./data/guests.csv"/>
+    </bean>
+
+    <bean id="hostRepo" class="Data.HostFileRepo">
+        <constructor-arg value="./data/hosts.csv"/>
+    </bean>
+
+    <bean id="reservationRepo" class="Data.ReservationFileRepo">
+        <constructor-arg value="./data/reservations"/>
+    </bean>
+
+    <bean id="io" class="UI.ConsoleIO"/>
+
+
+
+
+    <!-- Refs -->
+    <bean id="view" class="UI.View">
+        <constructor-arg ref="io"/>
+    </bean>
+
+    <bean id="guestService" class="Domain.GuestService">
+        <constructor-arg ref="guestRepo"/>
+    </bean>
+
+    <bean id="hostService" class="Domain.HostService">
+        <constructor-arg ref="hostRepo"/>
+    </bean>
+
+    <bean id="reservationService" class="Domain.ReservationService">
+        <constructor-arg ref="guestRepo"/>
+        <constructor-arg ref="hostRepo"/>
+        <constructor-arg ref="reservationRepo"/>
+    </bean>
+
+    <bean id="controller" class="UI.Controller">
+        <constructor-arg ref="hostService"/>
+        <constructor-arg ref="guestService"/>
+        <constructor-arg ref="reservationService"/>
+        <constructor-arg ref="view"/>
+    </bean>
+
+
+
+
+
+</beans>
