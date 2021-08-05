@@ -27,8 +27,8 @@ class ReservationServiceTest {
         Reservation reservation = new Reservation();
         reservation.setHost(HostRepoDouble.HOST);
         reservation.setResId(13);
-        reservation.setStartDate(LocalDate.of(2021, 8, 1));
-        reservation.setEndDate(LocalDate.of(2021, 8, 7));
+        reservation.setStartDate(LocalDate.of(2024, 8, 1));
+        reservation.setEndDate(LocalDate.of(2024, 8, 7));
         reservation.setGuest(GuestRepoDouble.GUEST);
         reservation.setTotal(new BigDecimal(2000));
 

@@ -1,6 +1,7 @@
 package UI;
 
 import Data.DataException;
+import Data.ReservationFileRepo;
 import Domain.GuestService;
 import Domain.HostService;
 import Domain.ReservationService;
@@ -42,6 +43,9 @@ public class Controller {
                 case VIEW_RESERVATIONS_FOR_HOST:
                     viewByHost();
                     break;
+                case VIEW_HOSTS:
+                    viewHosts();
+                    break;
                 case MAKE_RESERVATION:
                     makeReservation();
                     break;
@@ -63,10 +67,19 @@ public class Controller {
         view.enterToContinue();
     }
 
+    private void viewHosts(){
+        view.displayHeader(MainMenuOption.VIEW_HOSTS.getMessage());
+        String state = view.getHostState();
+        List<Host> hosts = hostService.findByState(state);
+        view.displayHeader("Host");
+        view.viewHost(hosts);
+        view.enterToContinue();
+    }
+
 
     private void makeReservation() throws DataException {
         view.displayHeader(MainMenuOption.MAKE_RESERVATION.getMessage());
-        Host host = getHostState();
+        Host host = getHost();
         if (host == null) {
             return;
         }
@@ -90,14 +103,14 @@ public class Controller {
 
     private void editReservation() throws DataException {
         view.displayHeader(MainMenuOption.EDIT_RESERVATION.getMessage());
-        Host host = getHostState();
-        Guest guest = getGuest();
+        String hostId =view.getHost();
 
+        List<Reservation> reservations = reservationService.findByHostId(hostId);
 
+        Reservation reservation = view.findReservation(reservations);
+        if(reservation == null){
+            return;}
 
-        Reservation reservation = getResByDate();
-        reservation.setHost(host);
-        reservation.setGuest(guest);
 
         Result<Reservation> result = reservationService.update(reservation);
         if(!result.isSuccess()){
@@ -105,23 +118,39 @@ public class Controller {
         }
         else{
             view.summary(reservation);
-            String successMessage = "Reservation Successfully create!";
+            String successMessage = "Reservation Successfully updated!";
             view.displayStatus(true, successMessage);
         }
     }
 
-    private void cancelReservation() {
+    private void cancelReservation() throws DataException {
         view.displayHeader(MainMenuOption.CANCEL_RESERVATION.getMessage());
-        //choose reservation
-        //delete reservation by resID
-        //success message
+        String hostId = view.getHost();
+        List<Reservation> reservations = reservationService.findByHostId(hostId);
+
+        Reservation reservation = view.findReservation(reservations);
+        if(reservation == null){
+            return;}
+
+        Result<Reservation> result = reservationService.deleteById(reservation.getHost().getHostId(),reservation.getResId());
+        if (!result.isSuccess()) {
+            view.displayStatus(false, result.getErrorMessages());
+        } else {
+            String successMessage = "Reservation Successfully cancelled!";
+            view.displayStatus(true, successMessage);
+        }
+
+
+
+
+        view.enterToContinue();
     }
 
 
-    private Host getHostState() {
+    private Host getHost() {
 
-        String state = view.getHostState();
-        List<Host> hosts = hostService.findByState(state);
+        String id = view.getHost();
+        List<Host> hosts = hostService.findById(id);
 
         return view.viewHost(hosts);
     }
@@ -132,14 +161,7 @@ public class Controller {
         return view.getGuestId(guests);
     }
 
-    private Reservation getResByDate(){
-        /*List<Reservation> hostId = reservationService.findByHostId(reservation.getHost().getHostId());*/
 
-        /*List<Reservation> reservations = ;
-        return view.getReservation(reservations);*/
-
-        return null;
-    }
 
 
 

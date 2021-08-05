@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 
 
 public class ReservationRepoDouble implements ReservationRepo {
-    final LocalDate startDate = LocalDate.of(2023, 8, 1);
-    final LocalDate endDate = LocalDate.of(2023, 8, 7);
+    final LocalDate startDate = LocalDate.of(2025, 8, 1);
+    final LocalDate endDate = LocalDate.of(2025, 8, 7);
 
     private final ArrayList<Reservation> reservations = new ArrayList<>();
 
@@ -26,14 +26,14 @@ public class ReservationRepoDouble implements ReservationRepo {
         reservation.setTotal(new BigDecimal(2000));
         reservations.add(reservation);
 
-        Reservation test = new Reservation();
+        /*Reservation test = new Reservation();
         reservation.setHost(HostRepoDouble.HOST);
         reservation.setResId(14);
         reservation.setStartDate(LocalDate.of(2020, 5, 16));
         reservation.setEndDate(LocalDate.of(2020, 5, 20));
         reservation.setGuest(GuestRepoDouble.GUEST);
         reservation.setTotal(new BigDecimal(2000));
-        reservations.add(test);
+        reservations.add(test);*/
 
 
     }
