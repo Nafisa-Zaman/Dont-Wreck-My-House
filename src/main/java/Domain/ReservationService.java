@@ -57,7 +57,7 @@ public class ReservationService {
     }
 
     public Result<Reservation> update(Reservation reservation) throws DataException {
-        Result<Reservation> result = validate(reservation);
+        Result<Reservation> result = updateValidation(reservation);
         if (!result.isSuccess()) {
             result.addErrorMessage("Invalid Input");
         }
@@ -182,6 +182,25 @@ public class ReservationService {
         }
 
     }
+
+    private Result<Reservation> updateValidation(Reservation reservation){
+        Result<Reservation> result = new Result<>();
+
+        if (reservation.getStartDate().isAfter(reservation.getEndDate())) {
+            result.addErrorMessage("Start date must be before end date.");
+        }
+
+        List<Reservation> all = reservationRepo.findByHostId(reservation.getHost().getHostId());
+        for (Reservation r : all) {
+            if (r.getStartDate().isBefore(reservation.getEndDate())
+                    && r.getEndDate().isAfter(reservation.getStartDate())
+                    && r.getResId() != reservation.getResId()) {
+                result.addErrorMessage("Reservation overlaps with another Reservation.");
+            }
+        }
+        return result;
+    }
+
 
     private void validateDomain(Reservation reservation, Result<Reservation> result) {
         if (reservation.getEndDate().isBefore(LocalDate.now())) {

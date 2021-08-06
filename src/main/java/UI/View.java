@@ -7,6 +7,7 @@ import Models.Reservation;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,6 +35,10 @@ public class View {
     public String getHost(){
         return io.readString("Search Host by Id:");
 
+    }
+
+    public int getGuest(){
+        return io.readInt("Guest Id");
     }
 
     public String getHostState(){
@@ -77,15 +82,39 @@ public class View {
     }
 
 
-    public Guest getGuestId(List<Guest> guests){
-        int guestId = io.readInt("Guest Id");
+    public Guest chooseGuestId(List<Guest> guests){
+        if(guests.size() == 0){
+            io. println("No guests found");
+            return null;
+        }
+
+        List<Guest> guestSort = guests.stream().sorted(Comparator.comparing(Guest::getGuestId)).collect(Collectors.toList());
+
+        int index = 1;
+        for(Guest guest : guestSort){
+            io.printf("%s: %s%n", index++,
+                    guest.getGuestId());
+        }
+        index--;
+
+        io.println("0. Exit");
+        String message = String.format("Select a guest's ID by its index [0 - %s]: ", index);
+
+        index = io.readInt(message, 0, index);
+        if(index <= 0){
+            return null;
+        }
+        return guestSort.get(index - 1);
+
+
+        /*int guestId = io.readInt("Guest Id");
         Guest guest = guests.stream().filter(g -> g.getGuestId() == guestId).findFirst().orElse(null);
 
         if(guest == null){
             displayStatus(false, String.format("No Guest with Id %s found.", guestId));
         }
 
-        return guest;
+        return guest;*/
 
     }
 
@@ -116,12 +145,19 @@ public class View {
     }
 
     public void summary(Reservation reservation){
-        displayHeader("Summary");
-        System.out.println("Start Date: " + reservation.getStartDate());
-        System.out.println("End Date: " + reservation.getEndDate());
-        System.out.println("Total: " + reservation.getTotal());
-        System.out.println("Confirm? : ");
-        io.readBoolean("[y/n]");
+        String option;
+            do {
+
+                displayHeader("Summary");
+                System.out.println("Start Date: " + reservation.getStartDate());
+                System.out.println("End Date: " + reservation.getEndDate());
+                System.out.println("Total: £" + reservation.getTotal());
+                System.out.println("Confirm? : ");
+                option = io.readString("[y/n]");
+
+            } while (!option.equals("y"));
+
+
 
     }
 
@@ -166,6 +202,8 @@ public class View {
                     reservation.getTotal());
         }
     }
+
+
 
 
     public void enterToContinue() {

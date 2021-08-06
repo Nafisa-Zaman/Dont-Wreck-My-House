@@ -93,7 +93,7 @@ public class Controller {
         if (!result.isSuccess()) {
             view.displayStatus(false, result.getErrorMessages());
         } else {
-            reservationService.calculateTotal(reservation.getStartDate(), reservation.getEndDate(), reservation.getHost().getHostId());
+            //reservationService.calculateTotal(reservation.getStartDate(), reservation.getEndDate(), reservation.getHost().getHostId());
             view.summary(reservation);
             String successMessage = "Reservation Successfully create!";
             view.displayStatus(true, successMessage);
@@ -110,6 +110,10 @@ public class Controller {
         Reservation reservation = view.findReservation(reservations);
         if(reservation == null){
             return;}
+        else{
+            reservation = view.update(reservations);
+        }
+
 
 
         Result<Reservation> result = reservationService.update(reservation);
@@ -156,10 +160,22 @@ public class Controller {
     }
 
     private Guest getGuest() {
-        int guestId = 0;
+        int guestId = view.getGuest();
         List<Guest> guests = guestService.findById(guestId);
-        return view.getGuestId(guests);
+        return view.chooseGuestId(guests);
     }
+
+    /*public void displayReservationList(Host host, boolean isCreateMethod) {
+        List<Reservation> reservations = reservationService.findByHost(host);
+        reservations = populateReservationListWithGuests(reservations);
+        if (isCreateMethod && reservations.size() == 0) {
+            view.displayHost(host);
+        }
+        view.displayReservations(reservations);
+    }*/
+
+
+
 
 
 
