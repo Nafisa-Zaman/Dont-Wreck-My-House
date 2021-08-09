@@ -61,7 +61,8 @@ public class ReservationFileRepo implements ReservationRepo {
     @Override
     public Reservation add(Reservation reservation) throws DataException {
         List<Reservation> all = findByHostId(reservation.getHost().getHostId());
-        reservation.getHost().setHostId(java.util.UUID.randomUUID().toString());
+        int resId = all.stream().mapToInt(Reservation::getResId).max().orElse(0) + 1;
+        reservation.setResId(resId);
         all.add(reservation);
         writeAll(all, reservation.getHost().getHostId());
         return reservation;

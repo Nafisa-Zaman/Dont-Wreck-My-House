@@ -165,14 +165,6 @@ public class Controller {
         return view.chooseGuestId(guests);
     }
 
-    /*public void displayReservationList(Host host, boolean isCreateMethod) {
-        List<Reservation> reservations = reservationService.findByHost(host);
-        reservations = populateReservationListWithGuests(reservations);
-        if (isCreateMethod && reservations.size() == 0) {
-            view.displayHost(host);
-        }
-        view.displayReservations(reservations);
-    }*/
 
 
 

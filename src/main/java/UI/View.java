@@ -107,15 +107,6 @@ public class View {
         return guestSort.get(index - 1);
 
 
-        /*int guestId = io.readInt("Guest Id");
-        Guest guest = guests.stream().filter(g -> g.getGuestId() == guestId).findFirst().orElse(null);
-
-        if(guest == null){
-            displayStatus(false, String.format("No Guest with Id %s found.", guestId));
-        }
-
-        return guest;*/
-
     }
 
     public Reservation findReservation(List<Reservation> reservations) throws DataException{
